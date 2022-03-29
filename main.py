@@ -1,35 +1,57 @@
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.common.exceptions import ElementClickInterceptedException
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
 import time
 
-CHROME_DRIVER_PATH = r"C:\Users\erick\system32\Chrome_Driver\chromedriver_win32\chromedriver.exe"
-USERNAME = "Your CUI"
-PASSWORD = "Your Password"
+USERNAME = "YOUR USERNAME"
+PASSWORD = "YOUR PASSWORD"
 
-driver = webdriver.Chrome(executable_path=CHROME_DRIVER_PATH)
+options = webdriver.ChromeOptions()
+options.add_experimental_option("detach", True)
+
+# Here I'm setting the browser and the location of the driver
+driver = webdriver.Chrome(options=options,service=Service(ChromeDriverManager().install()))
+
 driver.get("http://extranet.unsa.edu.pe/encuesta2/")
-driver.find_element_by_xpath('//*[@id="cuerpo"]/fieldset/table/tbody/tr/td/fieldset/form/table/tbody/tr[2]/td[2]/input').send_keys(USERNAME)
-driver.find_element_by_xpath('//*[@id="cuerpo"]/fieldset/table/tbody/tr/td/fieldset/form/table/tbody/tr[3]/td[2]/input').send_keys(PASSWORD)
-driver.find_element_by_xpath('//*[@id="logueo"]').click()
+
+#
+# Getting Selenium elements
+userInput = driver.find_element(By.NAME, value='txt_usuario')
+passwordInput = driver.find_element(By.NAME, value="txt_password")
+
+userInput.click()
+userInput.send_keys(USERNAME)
+
+passwordInput.click()
+passwordInput.send_keys(PASSWORD)
+
+# Opening surveys
+driver.find_element(By.NAME, value="logueo").click()
+
+
+# I'm in !!!!
+# Waithing for 1 sec
 time.sleep(1)
 
-lista_enlaces_encuestas = []
-elems = driver.find_elements_by_tag_name("a")
-# elems[3].click() prueba para cliclear una encuesta
-# Obtengo los enlaces
-elems[2].click()
-time.sleep(1)
-datos = driver.find_elements_by_css_selector("input[type='radio']")
-for i in datos:
-    i.click()
+numberOfIterations = driver.find_elements(By.CSS_SELECTOR, 'a[href="#"]')
 
-time.sleep(2)
-driver.find_element_by_xpath('//*[@id="agrega"]').click()
+for number in numberOfIterations:
+    # # MASTER KEY
+    linkList = driver.find_element(By.CSS_SELECTOR, 'a[href="#"]')
+    linkList.click()
+
+    time.sleep(1)
+    listButtons = driver.find_elements(By.CSS_SELECTOR, "input[type='radio']")
+    for button in listButtons:
+        button.click()
+
+    driver.find_element(By.NAME, "agrega").click()
+    time.sleep(1)
+
+print("ENCUESTA CONTESTADA EXITOSAMENTE!!!")
 
 
 
 
-    # print(elem.get_attribute("href"))
-# print(lista_enlaces_encuestas)
+
