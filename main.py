@@ -15,7 +15,7 @@ driver = webdriver.Chrome(options=options,service=Service(ChromeDriverManager().
 
 driver.get("http://extranet.unsa.edu.pe/encuesta2/")
 
-#
+
 # Getting Selenium elements
 userInput = driver.find_element(By.NAME, value='txt_usuario')
 passwordInput = driver.find_element(By.NAME, value="txt_password")
@@ -49,7 +49,7 @@ for number in numberOfIterations:
     driver.find_element(By.NAME, "agrega").click()
     time.sleep(1)
 
-print("ENCUESTA CONTESTADA EXITOSAMENTE!!!")
+print("ENCUESTAS CONTESTADAS EXITOSAMENTE!!!")
 
 
 
